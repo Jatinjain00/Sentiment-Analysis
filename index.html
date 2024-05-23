@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+            background-color: #f4f4f9;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            width: 300px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <form id="sentimentForm">
+        <textarea id="reviewText" placeholder="Type your text here..."></textarea>
+        <button type="submit">Analyze Sentiment</button>
+    </form>
+    <div id="result">
+        <strong>Sentiment:</strong> {{ variable }}
+    </div>
+ 
+    <script>
+        document.getElementById('sentimentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const reviewText = document.getElementById('reviewText').value;
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({review: reviewText})
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = `<strong>Sentiment:</strong> ${data.sentiment}`;
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML = 'Error: Could not retrieve the sentiment.';
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
